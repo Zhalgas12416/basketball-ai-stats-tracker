@@ -1,0 +1,45 @@
+# Python environments and generated package metadata
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Uploaded games, analysis results, and private review corrections
+storage/uploads/**
+storage/results/**
+storage/corrections/**
+!storage/uploads/.gitkeep
+!storage/results/.gitkeep
+!storage/corrections/.gitkeep
+
+# Training data is intentionally excluded. Keep only documentation/examples.
+datasets/**
+!datasets/**/
+!datasets/**/.gitkeep
+!datasets/**/README.md
+!datasets/**/sources.example.txt
+
+# Model weights and generated training/evaluation artifacts
+models/**/*.pt
+models/**/*.onnx
+models/**/*.engine
+models/runs/
+!models/.gitkeep
+runs/
+logs/
+
+# Tool caches and local OS/editor files
+.ultralytics/
+.matplotlib/
+.DS_Store
+.idea/
+.vscode/

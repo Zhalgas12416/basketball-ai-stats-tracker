@@ -1,0 +1,6 @@
+# One permitted local path or direct media URL per line.
+# Use files you own, have permission to use, or that are published under a compatible license.
+#
+# /absolute/path/to/game_clip.mp4
+# https://example.com/permitted-basketball-image.jpg
+# https://example.com/permitted-basketball-video.mp4

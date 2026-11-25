@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Basketball AI Tracker</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar" aria-label="Game controls">
+        <div>
+          <p class="eyebrow">Basketball AI Tracker</p>
+          <h1>Game stat lab</h1>
+        </div>
+        <div class="model-card" aria-live="polite">
+          <span>Detector</span>
+          <strong id="modelStatus">Checking model</strong>
+          <small id="modelDetails">Loading detector status...</small>
+        </div>
+        <form id="uploadForm" class="upload-panel">
+          <input id="videoInput" type="file" name="video" accept="video/*" />
+          <button type="submit">Upload video</button>
+        </form>
+      </section>
+
+      <section class="score-strip" aria-label="Analysis status">
+        <div>
+          <span>Status</span>
+          <strong id="statusText">Waiting for upload</strong>
+        </div>
+        <div>
+          <span>Players</span>
+          <strong id="playersCount">0</strong>
+        </div>
+        <div>
+          <span>Events</span>
+          <strong id="eventsCount">0</strong>
+        </div>
+        <div>
+          <span>Tracks</span>
+          <strong id="tracksCount">0</strong>
+        </div>
+        <div>
+          <span>Detections</span>
+          <strong id="detectionsCount">0</strong>
+        </div>
+        <div>
+          <span>Duration</span>
+          <strong id="durationText">0:00</strong>
+        </div>
+      </section>
+
+      <section class="insight-strip" aria-label="Detector summary">
+        <div>
+          <p class="eyebrow">Vision engine</p>
+          <p id="detectorSummary">Waiting for detector status.</p>
+        </div>
+        <ul id="warningList" class="warning-list"></ul>
+      </section>
+
+      <section class="quality-panel" aria-label="Detection quality report">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Model audit</p>
+            <h2>Detection quality</h2>
+          </div>
+          <p id="qualitySummary">Upload a video to inspect detector coverage.</p>
+        </div>
+        <div id="qualityClassCards" class="quality-grid"></div>
+        <div class="quality-detail">
+          <div>
+            <p class="eyebrow">Skipped frames</p>
+            <p id="skippedFramesText">No sampled frames yet.</p>
+          </div>
+          <div>
+            <p class="eyebrow">Low confidence</p>
+            <ol id="lowConfidenceList" class="low-confidence-list"></ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="review-panel" aria-label="Detection overlay viewer">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Review tape</p>
+            <h2>Detection overlay</h2>
+          </div>
+          <div class="overlay-tools">
+            <label>
+              <input id="showOverlay" type="checkbox" checked />
+              Boxes
+            </label>
+            <label>
+              <input id="labelMode" type="checkbox" />
+              Label
+            </label>
+            <select id="overlaySource" aria-label="Overlay source">
+              <option value="tracks">Tracks</option>
+              <option value="detections">Raw detections</option>
+            </select>
+            <select id="labelClass" aria-label="Correction label">
+              <option value="player">Player</option>
+              <option value="ball">Ball</option>
+              <option value="rim">Rim</option>
+              <option value="referee">Referee</option>
+              <option value="backboard">Backboard</option>
+            </select>
+            <button id="sampleHardFrames" type="button" disabled>Find hard frames</button>
+            <button id="undoCorrection" type="button" disabled>Undo fix</button>
+            <button id="exportCorrections" type="button" disabled>Export fixes</button>
+            <button id="buildCorrectionDataset" type="button" disabled>Build YOLO dataset</button>
+          </div>
+        </div>
+        <div id="videoStage" class="video-stage">
+          <video id="overlayVideo" controls preload="metadata" playsinline></video>
+          <canvas id="overlayCanvas" aria-hidden="true"></canvas>
+          <div id="overlayEmpty" class="overlay-empty">Upload a video to review model boxes.</div>
+        </div>
+        <div class="overlay-footer">
+          <p id="overlayStatus">No video loaded yet.</p>
+          <p id="correctionStatus">Turn on Label, choose a class, then drag on the video to save a correction.</p>
+          <div class="overlay-legend">
+            <span class="legend-player">Player</span>
+            <span class="legend-ball">Ball</span>
+            <span class="legend-rim">Rim</span>
+            <span class="legend-referee">Referee</span>
+            <span class="legend-backboard">Backboard</span>
+          </div>
+        </div>
+        <div class="hard-frame-panel">
+          <div>
+            <p class="eyebrow">Label queue</p>
+            <h3>Hard frames</h3>
+            <p id="hardFrameStatus">Run hard-frame sampling after analysis to jump to weak detector moments.</p>
+          </div>
+          <ol id="hardFrameList" class="hard-frame-list"></ol>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="event-panel" aria-label="Detected events">
+          <div class="panel-heading">
+            <h2>Timeline</h2>
+            <select id="eventFilter" aria-label="Filter events">
+              <option value="all">All events</option>
+              <option value="assist">Assists</option>
+              <option value="defensive_rebound">Defensive rebounds</option>
+              <option value="offensive_rebound">Offensive rebounds</option>
+              <option value="steal">Steals</option>
+              <option value="turnover">Turnovers</option>
+              <option value="block">Blocks</option>
+              <option value="two_pointer_made">2PT made</option>
+              <option value="three_pointer_made">3PT made</option>
+              <option value="free_throw_made">FT made</option>
+            </select>
+          </div>
+          <ol id="eventList" class="event-list"></ol>
+        </aside>
+
+        <section class="table-panel" aria-label="Player statistics">
+          <div class="panel-heading">
+            <h2>Box score</h2>
+            <button id="exportJson" type="button" disabled>Export JSON</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>PTS</th>
+                  <th>AST</th>
+                  <th>REB</th>
+                  <th>STL</th>
+                  <th>TOV</th>
+                  <th>BLK</th>
+                  <th>FG</th>
+                  <th>3PT</th>
+                  <th>FT</th>
+                </tr>
+              </thead>
+              <tbody id="statsBody">
+                <tr>
+                  <td colspan="10" class="empty-cell">Upload a game video to start analysis.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="track-section">
+            <div class="panel-heading compact-heading">
+              <h2>Vision tracks</h2>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Track</th>
+                    <th>Type</th>
+                    <th>Seen</th>
+                    <th>Frames</th>
+                    <th>Confidence</th>
+                  </tr>
+                </thead>
+                <tbody id="tracksBody">
+                  <tr>
+                    <td colspan="5" class="empty-cell">No tracks detected yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <nav class="app-tabs" aria-label="Primary app navigation">
+        <a class="active" href="#uploadForm">Game</a>
+        <a href="#tracksBody">Players</a>
+        <a href="#statsBody">Box</a>
+        <a href="#modelStatus">Settings</a>
+      </nav>
+    </main>
+    <script src="/static/app.js" type="module"></script>
+  </body>
+</html>

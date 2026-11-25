@@ -1,0 +1,23 @@
+# E-BARD 4-Class Ball-Focused Dataset
+
+Generated from `/Users/zhalgas/Documents/Codex/2026-06-03/i-want-to-create-ai-project/datasets/ebard-yolo-original` using `scripts/build_ebard_4class_ball_focus_dataset.py`.
+
+This dataset preserves the E-BARD detection labels and maps them to the app's canonical 4-class schema:
+
+- `0: ball`
+- `1: rim`
+- `2: player`
+- `3: referee`
+
+The full-frame train/validation/test images are preserved. The training split also includes ball-centered crop
+images to oversample small-ball examples while keeping any visible rim/player/referee labels inside each crop.
+
+Generation settings:
+
+- crop_size: 160
+- crop_scales: 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0
+- min_visibility: 0.08
+- output: `/Users/zhalgas/Documents/Codex/2026-06-03/i-want-to-create-ai-project/datasets/ebard-4class-ball-focus-v3-tight`
+
+Source: https://huggingface.co/datasets/GabrieleGiudici/E-BARD-detection
+License: CC-BY-4.0
