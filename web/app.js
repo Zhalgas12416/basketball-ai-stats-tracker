@@ -54,6 +54,13 @@ const elements = {
 
 loadHealth();
 
+const requestedGameId = new URLSearchParams(window.location.search).get("game");
+if (requestedGameId && /^[a-f0-9]{32}$/i.test(requestedGameId)) {
+  state.gameId = requestedGameId;
+  setStatus("Loading analysis");
+  startPolling();
+}
+
 elements.uploadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 

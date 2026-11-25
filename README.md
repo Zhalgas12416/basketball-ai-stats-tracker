@@ -6,6 +6,26 @@ The project is deliberately human-in-the-loop. A trained detector proposes playe
 
 > **Project status:** detection and tracking MVP. Automatic assists, rebounds, turnovers, and jersey identity are roadmap items, not finished features.
 
+## Product Walkthrough
+
+### Video Detection Overlay
+
+Real model detections and saved corrections are drawn directly over the uploaded game video. Solid boxes are model output; dashed `fix:` boxes are reviewer corrections.
+
+![Basketball video with player, ball, and referee detection boxes](docs/images/detection-overlay.jpg)
+
+### Correction Workflow
+
+The hard-frame sampler queues weak moments, reports missing classes, and shows how many fixes have already been saved at each timestamp.
+
+![Hard-frame correction queue beside the basketball video](docs/images/correction-workflow.jpg)
+
+### Detection Quality Report
+
+The browser report exposes per-class counts, empty sampled frames, and low-confidence detections so training work can target the largest gaps.
+
+![Per-class detection quality report](docs/images/detection-quality.jpg)
+
 ## What Works Today
 
 - Upload and play basketball video in the browser.
